@@ -1,12 +1,13 @@
 import {cn} from "@/lib/utils.ts";
-import {Field, FieldGroup, FieldLabel} from "@/components/ui/field.tsx";
 import {Input} from "@/components/ui/input.tsx";
-import {Link} from "react-router";
+import {Link, useNavigate} from "react-router";
 import {Button} from "@/components/ui/button.tsx";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
-import {Form} from "@/components/ui/form.tsx";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form.tsx";
+import $api from "@/api/axios.ts";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const formSchema = z.object({
     email: z.email("Некорректный email"),
     password: z.string()
@@ -16,35 +17,57 @@ const formSchema = z.object({
 
 const LoginForm = () => {
 
-    const form = useForm()
+    const form = useForm<z.infer<typeof formSchema>>()
+    const nav = useNavigate()
+
+    const onSubmit = async (data: z.infer<typeof formSchema>) => {
+        const res = await $api.post('/auth/login', {
+            email: data.email,
+            password: data.password
+        })
+
+        if (res.status === 200) {
+            localStorage.setItem('accessToken', res.data.token)
+            nav('/dashboard')
+        }
+    }
 
     return (
         <Form {...form}>
-            <form className={cn("flex flex-col gap-6")}>
-                <FieldGroup>
-                    <div className={"flex flex-col items-center gap-1 text-center"}>
-                        <h1 className={"text-xl font-bold"}>Войдите в учетную запись</h1>
-                        <p className={"text-muted-foreground text-sm text-balance"}>
-                            Введите свой адрес электронной почты ниже, чтобы войти в свою учетную запись.
-                        </p>
-                    </div>
-                    <Field>
-                        <FieldLabel htmlFor={"email"}>Email</FieldLabel>
-                        <Input id={"email"} type={"email"} placeholder="m@example.com"  required={true} />
-                    </Field>
-                    <Field>
+            <form onSubmit={form.handleSubmit(onSubmit)} className={cn("flex flex-col gap-6")}>
+                <div className={"flex flex-col items-center gap-1 text-center"}>
+                    <h1 className={"text-xl font-bold"}>Войдите в учетную запись</h1>
+                    <p className={"text-muted-foreground text-sm text-balance"}>
+                        Введите свой адрес электронной почты ниже, чтобы войти в свою учетную запись.
+                    </p>
+                </div>
+                <FormField control={form.control} name={"email"} render={({field}) => (
+                    <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                            <Input type={"email"} placeholder={"m@example.com"} required={true} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )} />
+
+                <FormField control={form.control} name={"password"}  render={({field}) => (
+                    <>
                         <div className={"flex items-center"}>
-                            <FieldLabel htmlFor={"password"}>Пароль</FieldLabel>
+                            <FormLabel htmlFor={"password"}>Пароль</FormLabel>
                             <Link to={"#"} className={"ml-auto text-sm underline-offset-4 hover:underline"}>
                                 Забыли пароль?
                             </Link>
                         </div>
-                        <Input id={"password"} type={"password"} required={true} />
-                    </Field>
-                    <Field>
-                        <Button type={"submit"}>Вход</Button>
-                    </Field>
-                </FieldGroup>
+
+                        <FormControl>
+                            <Input id={"password"} type={"password"} required={true} {...field} />
+                        </FormControl>
+
+                        <FormMessage/>
+                    </>
+                )} />
+                <Button type={"submit"}>Вход</Button>
             </form>
         </Form>
     )

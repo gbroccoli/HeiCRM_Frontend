@@ -4,12 +4,37 @@ import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
 import './index.css'
 import LoginPage from "@/pages/Login/LoginPage.tsx";
+import Layout from "@/pages/Layout";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <LoginPage />,
+        element: <LoginPage />
     },
+    {
+        path: "/dashboard",
+        element: <Layout />,
+        children: [
+            {
+                path: "admin",
+                element: <div></div>
+            },
+            {
+                path: "user",
+                element: <div></div>,
+                children: [
+                    {
+                        path: "profile",
+                        element: <div>профиль</div>
+                    }
+                ]
+            },
+            {
+                path: "operation",
+                element: <div></div>
+            }
+        ]
+    }
 ]);
 
 createRoot(document.getElementById('root')!).render(
