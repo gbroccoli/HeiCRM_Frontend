@@ -6,6 +6,10 @@ import {useForm} from "react-hook-form";
 import {z} from "zod";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form.tsx";
 import $api from "@/api/axios.ts";
+import {toast} from "sonner";
+import {useState} from "react";
+import {LoaderCircle} from "lucide-react";
+import type {AxiosError} from "axios";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const formSchema = z.object({
@@ -19,16 +23,53 @@ const LoginForm = () => {
 
     const form = useForm<z.infer<typeof formSchema>>()
     const nav = useNavigate()
+    const [loading, setLoading] = useState<boolean>(false)
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
-        const res = await $api.post('/auth/login', {
-            email: data.email,
-            password: data.password
-        })
+        setLoading(true);
 
-        if (res.status === 200) {
-            localStorage.setItem('accessToken', res.data.token)
-            nav('/dashboard')
+        try {
+            const res = await $api.post('/auth/login', {
+                email: data.email,
+                password: data.password
+            });
+
+            if (res.status === 200) {
+                toast.success("Авторизация прошла успешно", {
+                    duration: 5000,
+                });
+                localStorage.setItem('accessToken', res.data.token);
+                nav('/dashboard');
+            }
+        } catch (error: unknown) {
+            // Приводим к AxiosError для удобной работы
+            const axiosError = error as AxiosError;
+
+            // Обработка различных типов ошибок
+            if (axiosError.response?.status === 401) {
+                // Неверный логин или пароль
+                toast.error("Неверный email или пароль", {
+                    duration: 5000,
+                });
+            } else if (axiosError.response?.status === 400) {
+                // Ошибка валидации
+                const errorMessage = (axiosError.response?.data as { message?: string })?.message;
+                toast.error(errorMessage || "Некорректные данные", {
+                    duration: 5000,
+                });
+            } else if (axiosError.code === 'ERR_NETWORK') {
+                // Ошибка сети
+                toast.error("Ошибка подключения к серверу", {
+                    duration: 5000,
+                });
+            } else {
+                // Другие ошибки
+                toast.error("Произошла ошибка при авторизации", {
+                    duration: 5000,
+                });
+            }
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -67,7 +108,14 @@ const LoginForm = () => {
                         <FormMessage/>
                     </>
                 )} />
-                <Button type={"submit"}>Вход</Button>
+
+                {form.formState.errors.root && (
+                    <div className="text-sm font-medium text-destructive">
+                        {form.formState.errors.root.message}
+                    </div>
+                )}
+
+                <Button type={"submit"} disabled={loading}>{loading ? <LoaderCircle className={"animate-spin w-4 h-4 aspect-square"} />  : "Вход"}</Button>
             </form>
         </Form>
     )

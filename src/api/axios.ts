@@ -37,8 +37,15 @@ $api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
+        // URL эндпоинты, которые не требуют автоматического обновления токена
+        // /auth/login - пользователь еще не авторизован
+        // /auth/refresh - сам эндпоинт обновления (избежание бесконечного цикла)
+        const excludedUrls = ['/auth/login', '/auth/refresh'];
+        const isExcludedUrl = excludedUrls.some(url => originalRequest.url?.includes(url));
+
         // Обработка ошибки 401 (Unauthorized)
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        // Не обрабатываем 401 для эндпоинтов авторизации
+        if (error.response?.status === 401 && !originalRequest._retry && !isExcludedUrl) {
             originalRequest._retry = true;
 
             try {

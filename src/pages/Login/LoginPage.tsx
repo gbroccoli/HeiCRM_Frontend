@@ -1,9 +1,15 @@
 import {Network} from "lucide-react";
 import {Link} from "react-router";
 import LoginForm from "@/pages/Login/componetns/LoginForm.tsx";
+import {Toaster} from "@/components/ui/sonner";
+import {useMediaQuery} from "@/hooks";
+import {BREAKPOINTS} from "@/hooks/breakpoints.ts";
 
 
 const LoginPage = () => {
+
+    const mobile = useMediaQuery(BREAKPOINTS.md)
+
     return (
         <>
             <div className={"grid min-h-svh lg:grid-cols-2"}>
@@ -26,6 +32,7 @@ const LoginPage = () => {
                     <img src={"/bg.webp"} alt="" className={"absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale pointer-events-none"} />
                 </div>
             </div>
+            <Toaster position={!mobile ? "bottom-center" : "bottom-right"} />
         </>
     )
 }

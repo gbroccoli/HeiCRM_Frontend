@@ -1,27 +1,24 @@
-import {Outlet} from "react-router";
-import {useEffect} from "react";
-import $api from "@/api/axios.ts";
-
+import { Outlet, useLoaderData } from "react-router";
 
 const Layout = () => {
+    // Получаем данные из loader'а
+    const data = useLoaderData() as {
+        userRole: string;
+        error?: string;
+    };
 
-    const userRole = async () => {
-        const res = await $api.get('/auth/role')
+    // Можете использовать data.userRole для условного рендеринга или передачи в дочерние компоненты
+    // Например через context или props
 
-        if (res.status === 200) {
-            return res.data;
-        }
+    if (data.error) {
+        console.error('Error loading user role:', data.error);
     }
-
-    useEffect(() => {
-        userRole().then()
-    }, []);
 
     return (
         <>
             <Outlet />
         </>
-    )
-}
+    );
+};
 
 export default Layout

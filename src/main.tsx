@@ -4,7 +4,7 @@ import { createBrowserRouter } from "react-router";
 import { RouterProvider } from "react-router/dom";
 import './index.css'
 import LoginPage from "@/pages/Login/LoginPage.tsx";
-import Layout from "@/pages/Layout";
+import Layout, { dashboardLoader } from "@/pages/Layout";
 
 const router = createBrowserRouter([
     {
@@ -14,14 +14,15 @@ const router = createBrowserRouter([
     {
         path: "/dashboard",
         element: <Layout />,
+        loader: dashboardLoader,
         children: [
             {
                 path: "admin",
-                element: <div></div>
+                element: <div>Админ</div>
             },
             {
                 path: "user",
-                element: <div></div>,
+                element: <div>Юзер</div>,
                 children: [
                     {
                         path: "profile",
@@ -31,7 +32,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "operation",
-                element: <div></div>
+                element: <div>Оператор</div>
             }
         ]
     }
