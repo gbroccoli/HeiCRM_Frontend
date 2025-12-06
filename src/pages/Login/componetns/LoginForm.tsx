@@ -38,6 +38,7 @@ const LoginForm = () => {
                 toast.success("Авторизация прошла успешно", {
                     duration: 5000,
                 });
+                // Сохраняем accessToken (refreshToken в cookie)
                 localStorage.setItem('accessToken', res.data.token);
                 nav('/dashboard');
             }

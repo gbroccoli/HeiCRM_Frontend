@@ -49,13 +49,16 @@ $api.interceptors.response.use(
             originalRequest._retry = true;
 
             try {
-                const response = await axios.post(`${API_BASE_URL}/auth/refresh`);
+                // Используем обычный axios с withCredentials для отправки cookie с refreshToken
+                const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {}, {
+                    withCredentials: true
+                });
 
-                const { accessToken } = response.data;
-                localStorage.setItem('accessToken', accessToken);
+                const { token } = response.data;
+                localStorage.setItem('accessToken', token);
 
                 // Повторяем оригинальный запрос с новым токеном
-                originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+                originalRequest.headers.Authorization = `Bearer ${token}`;
                 return $api(originalRequest);
             } catch (refreshError) {
                 // Если refresh не удался, перенаправляем на логин
