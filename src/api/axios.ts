@@ -61,8 +61,13 @@ $api.interceptors.response.use(
                 originalRequest.headers.Authorization = `Bearer ${token}`;
                 return $api(originalRequest);
             } catch (refreshError) {
-                // Если refresh не удался, перенаправляем на логин
+                // Если refresh не удался, очищаем данные и перенаправляем на логин
                 localStorage.removeItem('accessToken');
+
+                // Очищаем store
+                const { getAuthState } = await import('@/stores/auth.ts');
+                getAuthState().clearAuth();
+
                 window.location.href = '/';
                 return Promise.reject(refreshError);
             }

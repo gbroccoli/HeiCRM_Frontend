@@ -1,23 +1,68 @@
-import { Outlet, useLoaderData } from "react-router";
+import {Outlet, useLoaderData, useNavigation, useLocation} from "react-router";
+import useAuth from "@/stores/auth.ts";
+import {useEffect, useState} from "react";
+import DashboardSkeleton from "@/components/DashboardSkeleton.tsx";
+import {SidebarInset, SidebarProvider, useSidebar } from "@/components/ui/sidebar.tsx";
+import AppSidebar from "@/pages/Layout/components/app-sidebar";
+import {Toaster} from "@/components/ui/sonner.tsx";
+import {useMediaQuery} from "@/hooks";
+import {BREAKPOINTS} from "@/hooks/breakpoints.ts";
 
 const Layout = () => {
+
+    const isMobile = useMediaQuery(BREAKPOINTS.lg);
+
     // Получаем данные из loader'а
     const data = useLoaderData() as {
-        userRole: string;
-        error?: string;
+        userRole: {
+            role: string;
+            name?: string;
+            email?: string;
+            avatar?: string;
+        } | null;
     };
 
-    // Можете использовать data.userRole для условного рендеринга или передачи в дочерние компоненты
-    // Например через context или props
+    const { setAuth } = useAuth();
+    const navigation = useNavigation();
+    const location = useLocation();
+    const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-    if (data.error) {
-        console.error('Error loading user role:', data.error);
+    // Синхронизируем данные из loader с store
+    useEffect(() => {
+        if (data.userRole) {
+            setAuth(
+                data.userRole.name || '',
+                data.userRole.email || '',
+                data.userRole.role || '',
+                data.userRole.avatar || ''
+            );
+        }
+    }, [data.userRole, setAuth]);
+
+    // Отмечаем что начальная загрузка завершена
+    useEffect(() => {
+        if (navigation.state === "idle" && isInitialLoad) {
+            setIsInitialLoad(false);
+        }
+    }, [navigation.state, isInitialLoad]);
+
+    // Показываем skeleton только при начальной загрузке или загрузке базового /dashboard
+    const isBaseDashboard = location.pathname === "/dashboard" || location.pathname === "/dashboard/";
+    const shouldShowSkeleton = navigation.state === "loading" && (isInitialLoad || isBaseDashboard);
+
+    if (shouldShowSkeleton) {
+        return <DashboardSkeleton />;
     }
 
+    // Редирект теперь происходит в loader'е, здесь только рендерим
     return (
-        <>
-            <Outlet />
-        </>
+        <SidebarProvider>
+            <AppSidebar />
+            <SidebarInset>
+                <Outlet context={{ userRole: data.userRole }} />
+            </SidebarInset>
+            <Toaster position={!isMobile ? "bottom-center" : "bottom-right"} />
+        </SidebarProvider>
     );
 };
 
