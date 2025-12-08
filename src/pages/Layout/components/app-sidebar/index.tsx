@@ -15,7 +15,7 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu.tsx";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.tsx";
-import {BadgeCheck, Bell, ChevronsUpDown, LogOut} from "lucide-react";
+import {BadgeCheck, Bell, ChevronsUpDown, LogOut, Waypoints} from "lucide-react";
 import {Link, useNavigate} from "react-router";
 import $api from "@/api/axios.ts";
 import {toast} from "sonner";
@@ -39,7 +39,23 @@ const AppSidebar = () => {
 
     return (
         <Sidebar>
-            <SidebarHeader></SidebarHeader>
+            <SidebarHeader>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton size={"lg"} asChild>
+                            <Link to={"#"}>
+                                <div className={"bg-[hsl(118_81%_39%)] text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg"}>
+                                    <Waypoints className={"size-4"} />
+                                </div>
+                                <div className={"grid flex-1 text-left text-sm leading-tight"}>
+                                    <span className={"truncate font-medium"}>ObsiOne</span>
+                                    <span className={"truncate text-xs"}>Для общежитий</span>
+                                </div>
+                            </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarHeader>
             <SidebarContent></SidebarContent>
             <SidebarFooter>
                 <SidebarMenu>
@@ -75,7 +91,7 @@ const AppSidebar = () => {
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
                                     <DropdownMenuItem asChild>
-                                       <Link to={`/dashboard/${auth.role}/profile`} className={"cursor-pointer"}>
+                                       <Link to={`/dashboard/${auth.role === "manager" ? "operation" : auth.role}/profile`} className={"cursor-pointer"}>
                                            <BadgeCheck/>
                                            Профиль
                                        </Link>

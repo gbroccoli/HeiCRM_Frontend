@@ -63,12 +63,27 @@ const router = createBrowserRouter([
             },
             {
                 path: "operation",
-                element: (
-                    <div className="p-6 space-y-4">
-                        <h1 className="text-2xl font-bold">Панель оператора</h1>
-                        <UserInfo />
-                    </div>
-                )
+                element: <Outlet />,
+                children: [
+                    {
+                        path: "",
+                        element: (
+                            <div className="p-6 space-y-4">
+                                <h1 className="text-2xl font-bold">Панель оператора</h1>
+                                <UserInfo />
+                            </div>
+                        )
+                    },
+                    {
+                        path: "profile",
+                        element: (
+                            <div className="p-6 space-y-4">
+                                <h1 className="text-2xl font-bold">Панель оператора 1</h1>
+                                <UserInfo />
+                            </div>
+                        )
+                    }
+                ]
             }
         ]
     }
