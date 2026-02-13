@@ -6,6 +6,7 @@ import './index.css'
 import LoginPage from "@/pages/Login/LoginPage.tsx";
 import Layout, { dashboardLoader } from "@/pages/Layout";
 import UserInfo from "@/components/UserInfo.tsx";
+import {admin_router} from "@/pages/admin";
 
 const router = createBrowserRouter([
     {
@@ -19,27 +20,7 @@ const router = createBrowserRouter([
         children: [
             {
                 path: "admin",
-                element: <div><Outlet /></div>,
-                children: [
-                    {
-                      path: "",
-                      element: (
-                          <div className="p-6 space-y-4">
-                              <h1 className="text-2xl font-bold">Панель администратора</h1>
-                              <UserInfo />
-                          </div>
-                      )
-                    },
-                    {
-                        path: "profile",
-                        element: (
-                            <div className="p-6 space-y-4">
-                                <h1 className="text-2xl font-bold">Профиль администратора</h1>
-                                <UserInfo />
-                            </div>
-                        )
-                    }
-                ]
+                children: admin_router
             },
             {
                 path: "user",
