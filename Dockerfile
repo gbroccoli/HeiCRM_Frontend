@@ -1,0 +1,12 @@
+FROM oven/bun:1 AS builder
+WORKDIR /app
+
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
+
+COPY . .
+RUN bun run build
+
+
+FROM docker.angie.software/angie:minimal
+COPY --from=builder /app/dist /usr/share/angie/html

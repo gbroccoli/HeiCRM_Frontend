@@ -1,0 +1,14 @@
+---
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "127.0.0.1:8079:80"
+    networks:
+      - heicrm
+
+networks:
+  heicrm:
+    external: true
