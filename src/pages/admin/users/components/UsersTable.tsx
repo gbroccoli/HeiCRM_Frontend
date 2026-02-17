@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import type { UserProfile } from "@/models/user";
+import { formatDate } from "@/lib/utils";
 
 interface UsersTableProps {
     users: UserProfile[];
@@ -34,10 +35,6 @@ function getRoleBadgeVariant(roleName: string) {
         default:
             return "secondary" as const;
     }
-}
-
-function formatDate(dateStr: string) {
-    return new Date(dateStr).toLocaleDateString("ru-RU");
 }
 
 export default function UsersTable({ users, loading, onEdit, onDelete }: UsersTableProps) {

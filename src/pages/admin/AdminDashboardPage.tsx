@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import type { PaginatedResponse } from "@/models/api";
 import type { Housing } from "@/models/housing";
+import { formatDate } from "@/lib/utils";
 
 interface TaskItem {
     id: number;
@@ -191,7 +192,7 @@ export default function AdminDashboardPage() {
                                             </TableCell>
                                             <TableCell>{STATUS_LABEL[task.status] ?? task.status}</TableCell>
                                             <TableCell>{task.assignee_name || "—"}</TableCell>
-                                            <TableCell>{new Date(task.created_at).toLocaleDateString("ru-RU")}</TableCell>
+                                            <TableCell>{formatDate(task.created_at)}</TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>

@@ -23,6 +23,7 @@ import {
     PRIORITY_VARIANT,
     STATUS_VARIANT,
 } from "@/models/task";
+import { formatDate } from "@/lib/utils";
 
 interface TasksTableProps {
     tasks: Task[];
@@ -30,10 +31,6 @@ interface TasksTableProps {
     onView: (task: Task) => void;
     onEdit: (task: Task) => void;
     onDelete: (task: Task) => void;
-}
-
-function formatDate(dateStr: string) {
-    return new Date(dateStr).toLocaleDateString("ru-RU");
 }
 
 export default function TasksTable({ tasks, loading, onView, onEdit, onDelete }: TasksTableProps) {

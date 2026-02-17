@@ -14,6 +14,7 @@ import { ArrowLeft, ArrowRightLeft, MoreHorizontal, Pencil, Plus, Trash2, Triang
 import type { Room } from "@/models/room";
 import type { Resident } from "@/models/resident";
 import type { ApiResponse, PaginatedResponse } from "@/models/api";
+import { formatDate } from "@/lib/utils";
 import ResidentDeleteDialog from "./components/ResidentDeleteDialog";
 import ResidentTransferDialog from "./components/ResidentTransferDialog";
 
@@ -133,10 +134,10 @@ export default function AdminRoomDetailPage() {
                                     <TableCell className="font-medium">{r.full_name}</TableCell>
                                     <TableCell>{r.email || "—"}</TableCell>
                                     <TableCell>{r.phone || "—"}</TableCell>
-                                    <TableCell>{new Date(r.move_in_date).toLocaleDateString("ru-RU")}</TableCell>
+                                    <TableCell>{formatDate(r.move_in_date)}</TableCell>
                                     <TableCell>
                                         {r.move_out_date
-                                            ? new Date(r.move_out_date).toLocaleDateString("ru-RU")
+                                            ? formatDate(r.move_out_date)
                                             : <Badge variant="secondary">Проживает</Badge>}
                                     </TableCell>
                                     <TableCell>

@@ -14,6 +14,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ArrowLeft, TriangleAlert } from "lucide-react";
 import type { Resident } from "@/models/resident";
 import type { ApiResponse } from "@/models/api";
+import { toInputDate } from "@/lib/utils";
 
 const editSchema = z.object({
     full_name: z.string().min(1, "Обязательное поле"),
@@ -47,10 +48,10 @@ export default function AdminResidentEditPage() {
             const r = data.data;
             form.reset({
                 full_name: r.full_name,
-                birth_date: r.birth_date,
+                birth_date: toInputDate(r.birth_date),
                 email: r.email || "",
                 phone: r.phone || "",
-                move_out_date: r.move_out_date || "",
+                move_out_date: toInputDate(r.move_out_date),
             });
         } catch {
             toast.error("Не удалось загрузить жильца");

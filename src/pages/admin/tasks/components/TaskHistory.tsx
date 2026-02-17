@@ -3,6 +3,7 @@ import { $api } from "@/api/axios";
 import { Skeleton } from "@/components/ui/skeleton";
 import { STATUS_LABELS } from "@/models/task";
 import type { TaskHistoryEntry } from "@/models/task";
+import { formatDateTime } from "@/lib/utils";
 
 interface TaskHistoryProps {
     taskId: number;
@@ -65,7 +66,7 @@ export default function TaskHistory({ taskId }: TaskHistoryProps) {
                             <p className="text-sm text-muted-foreground">{entry.comment}</p>
                         )}
                         <p className="text-xs text-muted-foreground">
-                            {new Date(entry.created_at).toLocaleString("ru-RU")}
+                            {formatDateTime(entry.created_at)}
                         </p>
                     </div>
                 </div>

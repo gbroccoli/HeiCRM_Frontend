@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { Send } from "lucide-react";
 import type { TaskComment } from "@/models/task";
+import { formatDateTime } from "@/lib/utils";
 
 interface TaskCommentsProps {
     taskId: number;
@@ -36,7 +37,7 @@ export default function TaskComments({ taskId }: TaskCommentsProps) {
         if (!text.trim()) return;
         setSending(true);
         try {
-            await $api.post(`/tasks/${taskId}/comments`, { text: text.trim() });
+            await $api.post(`/tasks/${taskId}/comments`, { comment_text: text.trim() });
             setText("");
             toast.success("Комментарий добавлен");
             fetchComments();
@@ -68,10 +69,10 @@ export default function TaskComments({ taskId }: TaskCommentsProps) {
                     <div className="flex items-center justify-between text-sm">
                         <span className="font-medium">{c.author_name}</span>
                         <span className="text-muted-foreground">
-                            {new Date(c.created_at).toLocaleString("ru-RU")}
+                            {formatDateTime(c.created_at)}
                         </span>
                     </div>
-                    <p className="text-sm whitespace-pre-wrap">{c.text}</p>
+                    <p className="text-sm whitespace-pre-wrap">{c.comment_text}</p>
                 </div>
             ))}
 

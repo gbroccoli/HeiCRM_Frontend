@@ -26,6 +26,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ArrowLeft, TriangleAlert } from "lucide-react";
 import type { UserProfile } from "@/models/user";
 import type { ApiResponse } from "@/models/api";
+import { toInputDate } from "@/lib/utils";
 
 const ROLES = [
     { id: 1, name: "Администратор" },
@@ -71,7 +72,7 @@ export default function AdminUserEditPage() {
                 last_name: user.last_name || "",
                 middle_name: user.middle_name || "",
                 phone: user.phone || "",
-                date_of_birth: user.date_of_birth || "",
+                date_of_birth: toInputDate(user.date_of_birth),
                 role_id: String(user.role_id),
             });
         } catch {

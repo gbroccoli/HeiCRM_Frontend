@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DoorOpen, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import type { Housing } from "@/models/housing";
+import { formatDate } from "@/lib/utils";
 
 interface HousingTableProps {
     items: Housing[];
@@ -23,10 +24,6 @@ interface HousingTableProps {
     onEdit: (item: Housing) => void;
     onDelete: (item: Housing) => void;
     onRooms: (item: Housing) => void;
-}
-
-function formatDate(dateStr: string) {
-    return new Date(dateStr).toLocaleDateString("ru-RU");
 }
 
 export default function HousingTable({ items, loading, onEdit, onDelete, onRooms }: HousingTableProps) {

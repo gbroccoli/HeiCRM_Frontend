@@ -3,19 +3,11 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { UserProfile } from "@/models/user";
+import { formatDate } from "@/lib/utils";
 
 interface ProfileViewProps {
     profile: UserProfile;
 }
-
-const formatDate = (dateString: string | null) => {
-    if (!dateString) return "—";
-    return new Date(dateString).toLocaleDateString("ru-RU", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-    });
-};
 
 const getInitials = (profile: UserProfile) => {
     const first = profile.first_name?.[0] || "";

@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { Download, Trash2, Upload } from "lucide-react";
 import type { TaskAttachment } from "@/models/task";
+import { formatDate } from "@/lib/utils";
 
 interface TaskAttachmentsProps {
     taskId: number;
@@ -117,7 +118,7 @@ export default function TaskAttachments({ taskId }: TaskAttachmentsProps) {
                     <div className="space-y-0.5">
                         <p className="text-sm font-medium">{a.file_name}</p>
                         <p className="text-xs text-muted-foreground">
-                            {formatFileSize(a.file_size)} · {a.uploaded_by_name} · {new Date(a.created_at).toLocaleDateString("ru-RU")}
+                            {formatFileSize(a.file_size)} · {a.uploaded_by_name} · {formatDate(a.created_at)}
                         </p>
                     </div>
                     <div className="flex gap-1">

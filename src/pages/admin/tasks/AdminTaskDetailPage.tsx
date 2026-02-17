@@ -16,6 +16,7 @@ import {
     HandHelping,
     TriangleAlert,
 } from "lucide-react";
+import { formatDateTime } from "@/lib/utils";
 import type { Task } from "@/models/task";
 import type { ApiResponse } from "@/models/api";
 import {
@@ -158,16 +159,18 @@ export default function AdminTaskDetailPage() {
                         <div>
                             <dt className="text-muted-foreground">Комната</dt>
                             <dd className="font-medium">
-                                {task.room_number ? `${task.building_address}, ${task.room_number}` : "—"}
+                                {task.room_number
+                                    ? [task.building_address, task.room_number].filter(Boolean).join(", ")
+                                    : "—"}
                             </dd>
                         </div>
                         <div>
                             <dt className="text-muted-foreground">Создана</dt>
-                            <dd className="font-medium">{new Date(task.created_at).toLocaleString("ru-RU")}</dd>
+                            <dd className="font-medium">{formatDateTime(task.created_at)}</dd>
                         </div>
                         <div>
                             <dt className="text-muted-foreground">Обновлена</dt>
-                            <dd className="font-medium">{new Date(task.updated_at).toLocaleString("ru-RU")}</dd>
+                            <dd className="font-medium">{formatDateTime(task.updated_at)}</dd>
                         </div>
                     </dl>
                 </CardContent>

@@ -36,7 +36,7 @@ export interface TaskComment {
     task_id: number;
     author_id: number;
     author_name: string;
-    text: string;
+    comment_text: string;
     created_at: string;
 }
 
