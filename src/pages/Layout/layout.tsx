@@ -15,10 +15,12 @@ const Layout = () => {
     // Получаем данные из loader'а
     const data = useLoaderData() as {
         userRole: {
+            code: number;
+            id: number;
             role: string;
-            name?: string;
-            email?: string;
-            avatar?: string;
+            name: string;
+            email: string;
+            avatar: string | null;
         } | null;
     };
 
@@ -31,6 +33,7 @@ const Layout = () => {
     useEffect(() => {
         if (data.userRole) {
             setAuth(
+                data.userRole.id,
                 data.userRole.name || '',
                 data.userRole.email || '',
                 data.userRole.role || '',

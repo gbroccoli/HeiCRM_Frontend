@@ -1,23 +1,26 @@
 import { create } from "zustand";
 
 interface AuthState {
+    id: number | null;
     name: string;
     email: string;
     role: string;
     avatar: string;
     isAuthenticated: boolean;
-    setAuth: (name: string, email: string, role: string, avatar: string) => void;
+    setAuth: (id: number, name: string, email: string, role: string, avatar: string) => void;
     clearAuth: () => void;
 }
 
 const useAuth = create<AuthState>((set) => ({
+    id: null,
     name: "",
     email: "",
     role: "",
     isAuthenticated: false,
     avatar: "",
-    setAuth: (name, email, role, avatar) =>
+    setAuth: (id, name, email, role, avatar) =>
         set({
+            id,
             name,
             email,
             role,
@@ -26,6 +29,7 @@ const useAuth = create<AuthState>((set) => ({
         }),
     clearAuth: () =>
         set({
+            id: null,
             name: "",
             email: "",
             role: "",

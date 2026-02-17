@@ -2,6 +2,9 @@ import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
+    SidebarGroup,
+    SidebarGroupContent,
+    SidebarGroupLabel,
     SidebarHeader,
     SidebarMenu, SidebarMenuButton,
     SidebarMenuItem, useSidebar
@@ -16,9 +19,10 @@ import {
 } from "@/components/ui/dropdown-menu.tsx";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.tsx";
 import {BadgeCheck, Bell, ChevronsUpDown, LogOut, Waypoints} from "lucide-react";
-import {Link, useNavigate} from "react-router";
+import {Link, useLocation, useNavigate} from "react-router";
 import $api from "@/api/axios.ts";
 import {toast} from "sonner";
+import {getNavItems} from "@/config/navigation.ts";
 
 
 const AppSidebar = () => {
@@ -26,15 +30,20 @@ const AppSidebar = () => {
     const auth = useAuth();
     const {isMobile} = useSidebar()
     const nav = useNavigate()
+    const location = useLocation()
+    const { basePath, items } = getNavItems(auth.role)
 
     const logout = async () => {
-        const res = await $api.post("/auth/logout");
-
-        if (res.status === 200) {
-            toast.success("Вы успешно вышли из учетной записи!")
-            localStorage.removeItem("accessToken");
-            nav('/')
+        try {
+            await $api.post("/auth/logout");
+            toast.success("Вы успешно вышли из учетной записи!");
+        } catch {
+            // Даже если API недоступен, очищаем локальное состояние
         }
+
+        localStorage.removeItem("accessToken");
+        auth.clearAuth();
+        nav('/');
     }
 
     return (
@@ -56,7 +65,31 @@ const AppSidebar = () => {
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
-            <SidebarContent></SidebarContent>
+            <SidebarContent>
+                <SidebarGroup>
+                    <SidebarGroupLabel>Навигация</SidebarGroupLabel>
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            {items.map((item) => {
+                                const fullPath = item.path ? `${basePath}/${item.path}` : basePath;
+                                const isActive = item.path
+                                    ? location.pathname.startsWith(fullPath)
+                                    : location.pathname === basePath;
+                                return (
+                                    <SidebarMenuItem key={fullPath}>
+                                        <SidebarMenuButton asChild isActive={isActive}>
+                                            <Link to={fullPath}>
+                                                <item.icon />
+                                                <span>{item.title}</span>
+                                            </Link>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                );
+                            })}
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
+            </SidebarContent>
             <SidebarFooter>
                 <SidebarMenu>
                     <SidebarMenuItem>

@@ -1,4 +1,4 @@
 import Layout from "@/pages/Layout/layout.tsx";
-export { dashboardLoader } from "./loader";
+export { dashboardLoader, loginLoader } from "./loader";
 
 export default Layout;

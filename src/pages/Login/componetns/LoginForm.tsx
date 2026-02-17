@@ -10,7 +10,7 @@ import {toast} from "sonner";
 import {useState} from "react";
 import {LoaderCircle} from "lucide-react";
 import type {AxiosError} from "axios";
-import useAuth from "@/stores/auth.ts";
+import type {LoginResponse} from "@/models/api.ts";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const formSchema = z.object({
@@ -25,13 +25,12 @@ const LoginForm = () => {
     const form = useForm<z.infer<typeof formSchema>>()
     const nav = useNavigate()
     const [loading, setLoading] = useState<boolean>(false)
-    const { setAuth } = useAuth()
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         setLoading(true);
 
         try {
-            const res = await $api.post('/auth/login', {
+            const res = await $api.post<LoginResponse>('/auth/login', {
                 email: data.email,
                 password: data.password
             });
@@ -40,18 +39,10 @@ const LoginForm = () => {
                 toast.success("Авторизация прошла успешно", {
                     duration: 5000,
                 });
-                // Сохраняем accessToken (refreshToken в cookie)
+                // Сохраняем accessToken (refreshToken приходит в HTTPOnly cookie)
                 localStorage.setItem('accessToken', res.data.token);
 
-                // Сохраняем данные пользователя в store
-                const userData = res.data.user || res.data;
-                setAuth(
-                    userData.name || '',
-                    userData.email || data.email,
-                    userData.role || '',
-                    userData.avatar || ''
-                );
-
+                // Данные пользователя загрузятся в dashboard loader через /auth/me
                 nav('/dashboard');
             }
         } catch (error: unknown) {

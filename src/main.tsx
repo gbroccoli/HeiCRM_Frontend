@@ -4,14 +4,15 @@ import {createBrowserRouter, Outlet} from "react-router";
 import { RouterProvider } from "react-router/dom";
 import './index.css'
 import LoginPage from "@/pages/Login/LoginPage.tsx";
-import Layout, { dashboardLoader } from "@/pages/Layout";
+import Layout, { dashboardLoader, loginLoader } from "@/pages/Layout";
 import UserInfo from "@/components/UserInfo.tsx";
 import {admin_router} from "@/pages/admin";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <LoginPage />
+        element: <LoginPage />,
+        loader: loginLoader,
     },
     {
         path: "/dashboard",
