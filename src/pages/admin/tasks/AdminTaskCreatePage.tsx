@@ -57,26 +57,24 @@ export default function AdminTaskCreatePage() {
         },
     });
 
-    const selectedBuildingId = form.watch("building_id");
-
     useEffect(() => {
         $api.get<PaginatedResponse<Housing>>("/housing/", { params: { page: 1, page_size: 100 } })
             .then(({ data }) => setBuildings(data.data.items ?? []))
             .catch(() => setBuildings([]));
     }, []);
 
-    useEffect(() => {
-        if (!selectedBuildingId) {
+    const fetchRooms = (buildingId: string) => {
+        if (!buildingId) {
             setRooms([]);
             return;
         }
         setRoomsLoading(true);
         form.setValue("room_id", "");
-        $api.get<PaginatedResponse<Room>>(`/housing/${selectedBuildingId}/rooms/`, { params: { page: 1, page_size: 200 } })
+        $api.get<PaginatedResponse<Room>>(`/housing/${buildingId}/rooms/`, { params: { page: 1, page_size: 200 } })
             .then(({ data }) => setRooms(data.data.items ?? []))
             .catch(() => setRooms([]))
             .finally(() => setRoomsLoading(false));
-    }, [selectedBuildingId, form]);
+    };
 
     const onSubmit = async (values: CreateFormValues) => {
         try {
@@ -160,7 +158,13 @@ export default function AdminTaskCreatePage() {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Здание</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value}>
+                                        <Select
+                                            onValueChange={(value) => {
+                                                field.onChange(value);
+                                                fetchRooms(value);
+                                            }}
+                                            value={field.value}
+                                        >
                                             <FormControl>
                                                 <SelectTrigger className="w-full">
                                                     <SelectValue placeholder="Выберите здание" />
@@ -187,7 +191,7 @@ export default function AdminTaskCreatePage() {
                                         <Select
                                             onValueChange={field.onChange}
                                             value={field.value}
-                                            disabled={!selectedBuildingId || roomsLoading}
+                                            disabled={rooms.length === 0 && !roomsLoading}
                                         >
                                             <FormControl>
                                                 <SelectTrigger className="w-full">
