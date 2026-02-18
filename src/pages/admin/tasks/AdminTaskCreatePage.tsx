@@ -70,7 +70,7 @@ export default function AdminTaskCreatePage() {
         }
         setRoomsLoading(true);
         form.setValue("room_id", "");
-        $api.get<PaginatedResponse<Room>>(`/housing/${buildingId}/rooms/`, { params: { page: 1, page_size: 200 } })
+        $api.get<PaginatedResponse<Room>>(`/housing/${buildingId}/rooms`, { params: { page: 1, page_size: 100 } })
             .then(({ data }) => setRooms(data.data.items ?? []))
             .catch(() => setRooms([]))
             .finally(() => setRoomsLoading(false));
