@@ -9,4 +9,5 @@ RUN bun run build
 
 
 FROM docker.angie.software/angie:minimal
+COPY angie.conf /etc/angie/http.d/default.conf
 COPY --from=builder /app/dist /usr/share/angie/html
